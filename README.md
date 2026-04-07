@@ -1,8 +1,4 @@
-Here is a complete, professional `README.md` file you can add to the root of your GitHub repository. It clearly explains your engineering decisions, addresses the evaluation criteria, and provides setup instructions. 
 
-You can create a new file named `README.md` in your project folder and paste this directly into it:
-
-```markdown
 # 2026 Premium Annual Calendar Challenge
 
 A highly polished, interactive React calendar component locked to the year 2026. Designed with a premium glassmorphism aesthetic, advanced state management, and seamless UX/UI micro-interactions.
