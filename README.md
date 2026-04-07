@@ -67,4 +67,3 @@ TUF-challenge/
 
 ---
 *Built for the Frontend Engineering Challenge.*
-```
