@@ -26,8 +26,6 @@ This project was built to satisfy a strict frontend engineering challenge, focus
 
 This project is built using **Vite + React**. 
 
-### Prerequisites
-Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
 
 ### Installation Steps
 
