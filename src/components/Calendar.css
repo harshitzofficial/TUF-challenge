@@ -14,6 +14,7 @@
     --c-tooltip-bg: #1A2535;
     --c-tooltip-txt: #ffffff;
     --c-shadow-inset: rgba(255,255,255,1);
+    --c-overlay-bg: rgba(255, 255, 255, 0.4);
     
     font-family: 'Nunito Sans', sans-serif;
     font-weight: 300;
@@ -36,14 +37,22 @@
     --c-tooltip-bg: #F8FAFC;
     --c-tooltip-txt: #0F172A;
     --c-shadow-inset: rgba(255,255,255,0.05);
+    --c-overlay-bg: rgba(0, 0, 0, 0.6);
   }
 
-  /* ── Card ──────────────────────────────────────────── */
+  /* ── Card & Smart Grid Architecture ─────────────────────────── */
   .wcal-card {
     width: 100%;
     max-width: 1080px;
     display: grid;
     grid-template-columns: 310px 1fr;
+    grid-template-rows: auto 1fr;
+    
+    /* Desktop Layout Assignment */
+    grid-template-areas:
+      "hero right"
+      "notes right";
+      
     min-height: 620px;
     background: var(--c-card);
     backdrop-filter: blur(28px);
@@ -72,22 +81,93 @@
     background-size: 180px;
   }
 
-  /* ── LEFT PANEL ─────────────────────────────────────── */
-  .wcal-left {
+  /* ── Glassmorphism Month Overlay ───────────────────────── */
+  .wcal-month-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 150;
+    background: var(--c-overlay-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: flex;
-    flex-direction: column;
-    border-right: 1px solid var(--c-border);
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.5s;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
   }
 
-  /* Hero image */
+  .wcal-month-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .wcal-month-grid-container {
+    background: var(--c-card);
+    border: 1px solid var(--c-card-border);
+    padding: 32px;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    transform: translateY(20px) scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .wcal-month-overlay.open .wcal-month-grid-container {
+    transform: translateY(0) scale(1);
+  }
+
+  .wcal-overlay-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    color: var(--c-text-main);
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+
+  .wcal-month-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .wcal-month-btn {
+    padding: 14px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--c-input-bg);
+    color: var(--c-text-sec);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .wcal-month-btn:hover {
+    background: var(--accent-a);
+    color: var(--accent);
+  }
+
+  .wcal-month-btn.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 12px var(--accent-a);
+  }
+
+  /* ── AREA 1: Hero Image ─────────────────────────────────────── */
   .wcal-hero {
+    grid-area: hero;
     position: relative;
     height: 268px;
     flex-shrink: 0;
     overflow: hidden;
+    border-right: 1px solid var(--c-border);
+    border-bottom: 1px solid var(--c-border);
+    transition: border-color 0.5s;
   }
 
   .wcal-hero-img {
@@ -142,14 +222,16 @@
     letter-spacing: 0.05em;
   }
 
-  /* Notes */
+  /* ── AREA 2: Notes ────────────────────────────────────────── */
   .wcal-notes {
-    flex: 1;
+    grid-area: notes;
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    gap: 13px;
+    padding: 24px 20px;
+    gap: 16px;
     overflow: hidden;
+    border-right: 1px solid var(--c-border);
+    transition: border-color 0.5s;
   }
 
   .wcal-notes-header {
@@ -182,12 +264,12 @@
 
   .wcal-textarea {
     flex: 1;
-    min-height: 110px;
-    border: 1.5px solid var(--accent-a);
+    min-height: 140px;
+    border: 1px solid var(--c-border);
     border-radius: 13px;
-    padding: 13px 14px;
+    padding: 16px;
     font-family: 'Nunito Sans', sans-serif;
-    font-size: 13px;
+    font-size: 13.5px;
     font-weight: 300;
     line-height: 1.8;
     color: var(--c-text-main);
@@ -219,7 +301,7 @@
     color: #fff;
     border: none;
     border-radius: 9px;
-    padding: 9px 16px;
+    padding: 10px 16px;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 10px;
     font-weight: 700;
@@ -239,14 +321,14 @@
   .wcal-save-btn:active { transform: translateY(0); }
 
   .wcal-clear-note-btn {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     background: transparent;
-    border: 1.5px solid var(--accent-a);
+    border: 1px solid var(--c-border);
     border-radius: 9px;
     color: var(--c-text-muted);
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -263,9 +345,9 @@
   .wcal-saved-list {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 8px;
     overflow-y: auto;
-    max-height: 170px;
+    max-height: 150px;
     scrollbar-width: none;
   }
 
@@ -275,7 +357,7 @@
     background: var(--accent-a);
     border-left: 2px solid var(--accent);
     border-radius: 0 9px 9px 0;
-    padding: 9px 12px;
+    padding: 10px 14px;
     cursor: pointer;
     transition: background 0.15s, filter 0.15s;
     position: relative;
@@ -290,11 +372,11 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 3px;
+    margin-bottom: 4px;
   }
 
   .wcal-saved-item-text {
-    font-size: 12px;
+    font-size: 12.5px;
     color: var(--c-text-sec);
     line-height: 1.5;
     display: -webkit-box;
@@ -308,14 +390,14 @@
     position: absolute;
     top: 8px;
     right: 8px;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: none;
     border: none;
     color: var(--c-text-muted);
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -326,12 +408,13 @@
   .wcal-saved-item:hover .wcal-saved-item-del { opacity: 1; }
   .wcal-saved-item-del:hover { color: var(--accent); }
 
-  /* ── RIGHT PANEL ─────────────────────────────────────── */
+  /* ── AREA 3: RIGHT PANEL (Calendar Grid) ──────────────── */
   .wcal-right {
+    grid-area: right;
     display: flex;
     flex-direction: column;
-    padding: 28px 28px 22px;
-    gap: 18px;
+    padding: 32px 32px 24px;
+    gap: 20px;
   }
 
   /* Header */
@@ -339,6 +422,21 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+  }
+
+  .wcal-title-block {
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  
+  .wcal-title-block:hover {
+    opacity: 0.8;
+  }
+
+  .flex-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .wcal-month-title {
@@ -351,13 +449,25 @@
     transition: color 0.5s;
   }
 
+  .dropdown-arrow {
+    width: 28px;
+    height: 28px;
+    color: var(--c-text-muted);
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  
+  .dropdown-arrow.rotated {
+    transform: rotate(-180deg);
+    color: var(--accent);
+  }
+
   .wcal-year-label {
     font-size: 10.5px;
     font-weight: 700;
     letter-spacing: 0.26em;
     text-transform: uppercase;
     color: var(--c-text-muted);
-    margin-top: 9px;
+    margin-top: 10px;
     transition: color 0.5s;
   }
 
@@ -372,7 +482,7 @@
     height: 34px;
     padding: 0 14px;
     background: transparent;
-    border: 1.5px solid var(--accent-a);
+    border: 1px solid var(--c-border);
     border-radius: 8px;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 10px;
@@ -387,13 +497,14 @@
   .wcal-today-btn:hover {
     color: var(--accent);
     border-color: var(--accent);
+    background: var(--accent-a);
   }
 
   .wcal-nav {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    border: 1.5px solid var(--accent-a);
+    border: 1px solid var(--c-border);
     background: transparent;
     color: var(--c-text-sec);
     cursor: pointer;
@@ -416,7 +527,7 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    border: 1.5px solid transparent;
+    border: 1px solid var(--c-border);
     background: transparent;
     color: var(--c-text-muted);
     cursor: pointer;
@@ -430,23 +541,24 @@
   .wcal-theme-toggle:hover {
     color: var(--accent);
     background: var(--accent-a);
+    border-color: var(--accent);
   }
 
   /* Selection bar */
   .wcal-sel-bar {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 11px 15px;
+    gap: 12px;
+    padding: 12px 16px;
     background: var(--accent-a);
-    border-radius: 10px;
+    border-radius: 12px;
     min-height: 44px;
     transition: background 0.3s;
   }
 
   .wcal-sel-pip {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: var(--accent);
     flex-shrink: 0;
@@ -459,7 +571,7 @@
 
   .wcal-sel-txt {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 14.5px;
+    font-size: 15px;
     font-style: italic;
     color: var(--c-text-sec);
     flex: 1;
@@ -469,14 +581,14 @@
   }
 
   .wcal-sel-x {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
-    border: 1.5px solid var(--accent-a);
+    border: 1px solid var(--c-border);
     background: transparent;
     color: var(--c-text-muted);
     cursor: pointer;
-    font-size: 15px;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -497,7 +609,7 @@
   .wcal-day-labels {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
 
   .wcal-dl {
@@ -507,7 +619,7 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--c-text-muted);
-    padding: 2px 0 7px;
+    padding-bottom: 6px;
     transition: color 0.5s;
   }
 
@@ -519,7 +631,7 @@
   .wcal-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    row-gap: 1px;
+    row-gap: 2px;
   }
 
   /* ── Day Cell ──────────────────────────────────────────── */
@@ -540,7 +652,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    height: 34px;
+    height: 36px;
     background: var(--accent-a);
     pointer-events: none;
     z-index: 0;
@@ -549,24 +661,24 @@
   /* The circle */
   .wcal-cell-disc {
     position: relative;
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1;
-    transition: background 0.13s, box-shadow 0.13s, transform 0.13s;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
   }
 
   .wcal-cell:not(.is-start):not(.is-end):hover .wcal-cell-disc {
     background: var(--accent-a);
-    transform: scale(1.08);
+    transform: scale(1.1);
   }
 
   .wcal-cell-num {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 400;
     line-height: 1;
     color: var(--c-text-main);
@@ -594,7 +706,7 @@
   .wcal-cell.is-start .wcal-cell-disc,
   .wcal-cell.is-end .wcal-cell-disc {
     background: var(--accent) !important;
-    box-shadow: 0 3px 12px var(--accent-a);
+    box-shadow: 0 4px 14px var(--accent-a);
   }
 
   .wcal-cell.is-start .wcal-cell-num,
@@ -606,11 +718,11 @@
   /* Holiday dot */
   .wcal-cell-dot {
     position: absolute;
-    bottom: 5px;
+    bottom: 6px;
     left: 50%;
     transform: translateX(-50%);
-    width: 3.5px;
-    height: 3.5px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
     background: var(--accent);
     z-index: 2;
@@ -627,19 +739,19 @@
     position: absolute;
     bottom: calc(100% + 7px);
     left: 50%;
-    transform: translateX(-50%) translateY(3px);
+    transform: translateX(-50%) translateY(4px);
     background: var(--c-tooltip-bg);
     color: var(--c-tooltip-txt);
     font-size: 9px;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     white-space: nowrap;
-    padding: 4px 9px;
+    padding: 5px 10px;
     border-radius: 6px;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.18s, transform 0.18s, background 0.5s, color 0.5s;
+    transition: opacity 0.2s, transform 0.2s, background 0.5s, color 0.5s;
     z-index: 20;
   }
 
@@ -659,13 +771,13 @@
     transform: translateX(-50%) translateY(0);
   }
 
-  /* ── Month strip ────────────────────────────────────────── */
+  /* Month strip (Hidden on mobile by default since we have the modal) */
   .wcal-month-strip {
     display: flex;
     gap: 3px;
     overflow-x: auto;
     scrollbar-width: none;
-    padding-bottom: 1px;
+    padding-bottom: 4px;
     flex-wrap: nowrap;
   }
 
@@ -677,19 +789,19 @@
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    padding: 5px 11px;
+    padding: 6px 12px;
     border-radius: 20px;
     cursor: pointer;
-    border: 1.5px solid transparent;
+    border: 1px solid transparent;
     color: var(--c-text-muted);
-    transition: all 0.18s, color 0.5s;
+    transition: all 0.2s, color 0.5s;
     background: transparent;
   }
 
   .wcal-ms-pill.active {
     background: var(--accent);
     color: #fff;
-    box-shadow: 0 2px 8px var(--accent-a);
+    box-shadow: 0 3px 10px var(--accent-a);
   }
 
   .wcal-ms-pill:not(.active):hover {
@@ -699,8 +811,8 @@
 
   /* ── Cell animations ────────────────────────────────────── */
   @keyframes cellReveal {
-    from { opacity: 0; transform: translateY(5px) scale(0.96); }
-    to   { opacity: 1; transform: translateY(0)   scale(1);    }
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0);    }
   }
 
   @keyframes gridFadeIn {
@@ -708,36 +820,63 @@
     to   { opacity: 1; }
   }
 
-  .wcal-grid-anim { animation: gridFadeIn 0.28s ease; }
+  .wcal-grid-anim { animation: gridFadeIn 0.3s ease; }
   .wcal-cell      { animation: cellReveal 0.3s ease both; }
 
-  /* ── Responsive ─────────────────────────────────────────── */
-  @media (max-width: 740px) {
+  /* ── SMART MOBILE BREAKPOINT ─────────────────────────── */
+  @media (max-width: 768px) {
     .wcal-root { padding: 12px; align-items: flex-start; }
 
     .wcal-card {
       grid-template-columns: 1fr;
-      max-width: 480px;
-      min-height: unset;
+      grid-template-rows: auto auto auto;
+      
+      /* THIS IS THE MAGIC FIX: Rearranges the blocks on mobile! */
+      grid-template-areas:
+        "hero"
+        "right"
+        "notes";
+        
+      max-width: 520px;
       margin: 0 auto;
+      min-height: unset;
     }
 
-    .wcal-left {
+    .wcal-hero {
+      height: 220px;
       border-right: none;
+      /* Border bottom separates hero from the grid below it */
       border-bottom: 1px solid var(--c-border);
     }
 
-    .wcal-hero { height: 210px; }
-    .wcal-right { padding: 20px 16px 16px; gap: 14px; }
-    .wcal-month-title { font-size: 40px; }
-    .wcal-cell-disc { width: 32px; height: 32px; }
-    .wcal-cell-bar  { height: 30px; }
-    .wcal-cell-num  { font-size: 15px; }
+    .wcal-right {
+      padding: 24px 20px 20px;
+      /* Border bottom separates grid from the notes below it */
+      border-bottom: 1px solid var(--c-border);
+      gap: 16px;
+    }
+
+    .wcal-notes {
+      border-right: none;
+      padding: 24px 20px;
+    }
+
+    /* Hide the old bottom strip since we use the dropdown modal now */
+    .wcal-month-strip {
+        display: none; 
+    }
+
+    /* Adjust font sizing for mobile */
+    .wcal-month-title { font-size: 42px; }
+    .wcal-cell-disc { width: 34px; height: 34px; }
+    .wcal-cell-bar  { height: 32px; }
+    .wcal-cell-num  { font-size: 16px; }
   }
 
   @media (max-width: 400px) {
-    .wcal-hero { height: 175px; }
-    .wcal-cell-disc { width: 28px; height: 28px; }
-    .wcal-cell-bar  { height: 26px; }
-    .wcal-cell-num  { font-size: 13.5px; }
+    .wcal-hero { height: 180px; }
+    .wcal-cell-disc { width: 30px; height: 30px; }
+    .wcal-cell-bar  { height: 28px; }
+    .wcal-cell-num  { font-size: 14.5px; }
+    .wcal-month-grid { grid-template-columns: repeat(2, 1fr); }
   }
