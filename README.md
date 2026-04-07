@@ -1,5 +1,5 @@
 
-# 2026 Premium Annual Calendar Challenge
+# Annual Calendar Challenge
 [![Live Demo](https://img.shields.io/badge/Live_Demo-View_Project-blue?style=for-the-badge)](https://tuf-challenge.vercel.app/)
 
 A highly polished, interactive React calendar component locked to the year 2026. Designed with a premium glassmorphism aesthetic, advanced state management, and seamless UX/UI micro-interactions.
